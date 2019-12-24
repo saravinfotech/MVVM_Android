@@ -41,7 +41,7 @@ dependencies {
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
 
     // Design Support
-    implementation "com.android.support:design:$supportVersion"
+    implementation "com.android.support:design:$supportLibraryVersion"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

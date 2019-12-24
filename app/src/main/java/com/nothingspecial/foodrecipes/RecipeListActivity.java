@@ -37,12 +37,14 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
     private RecipeListViewModel recipeListViewModel;
     private RecyclerView recyclerView;
     private RecipeRecyclerAdapter recyclerAdapter;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_list);
         recyclerView = findViewById(R.id.recipe_list);
+        searchView = findViewById(R.id.search_view);
         recipeListViewModel = ViewModelProviders.of(this).get(RecipeListViewModel.class);
         initRecyclerView();
         subscribeObservers();
@@ -59,8 +61,11 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
             @Override
             public void onChanged(@Nullable List<Recipe> recipes) {
                 if(recipes!=null) {
-                    Testing.printRecipes(recipes,TAG);
-                    recyclerAdapter.setRecipes(recipes);
+                    if(recipeListViewModel.isViewingRecipes()) {
+                        Testing.printRecipes(recipes, TAG);
+                        recyclerAdapter.setRecipes(recipes);
+                        recipeListViewModel.setIsPerformingQuery(false);
+                    }
                 }
             }
         });
@@ -75,10 +80,11 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
     }
 
     private void initSearchView(){
-        final SearchView searchView = findViewById(R.id.search_view);
+        searchView = findViewById(R.id.search_view);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                searchView.clearFocus();
                 recyclerAdapter.displayLoading();
                 recipeListViewModel.searchRecipeAPI(s,1);
                 return false;
@@ -108,13 +114,24 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
     public void onCategoryClick(String category) {
         recyclerAdapter.displayLoading();
         recipeListViewModel.searchRecipeAPI(category,1);
+        searchView.clearFocus();
     }
 
     private void displaySearchCategories(){
         recipeListViewModel.setIsViewingRecipes(false);
         recyclerAdapter.displaySearchCategories();
     }
-        /*final RecipeApi recipeApi = ServiceGenerator.getRecipeApi();
+
+    @Override
+    public void onBackPressed() {
+        if(recipeListViewModel.onBackPressed()){
+            super.onBackPressed();
+        }else{
+            displaySearchCategories();
+        }
+    }
+
+    /*final RecipeApi recipeApi = ServiceGenerator.getRecipeApi();
 
         Call<RecipeResponse> recipeResponseCall = recipeApi.getRecipe(
           Constants.API_KEY,

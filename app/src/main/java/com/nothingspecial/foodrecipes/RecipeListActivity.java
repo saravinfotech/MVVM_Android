@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.View;
 
@@ -19,6 +20,7 @@ import com.nothingspecial.foodrecipes.request.response.RecipeResponse;
 import com.nothingspecial.foodrecipes.request.response.RecipeSearchResponse;
 import com.nothingspecial.foodrecipes.util.Constants;
 import com.nothingspecial.foodrecipes.util.Testing;
+import com.nothingspecial.foodrecipes.util.VerticalSpacingItemDecorator;
 import com.nothingspecial.foodrecipes.viewmodel.RecipeListViewModel;
 
 import java.io.IOException;
@@ -44,7 +46,12 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
         recipeListViewModel = ViewModelProviders.of(this).get(RecipeListViewModel.class);
         initRecyclerView();
         subscribeObservers();
-        testRecipeAPI();
+        //testRecipeAPI();
+        initSearchView();
+        if(!recipeListViewModel.isViewingRecipes()){
+            displaySearchCategories();
+        }
+
     }
 
     private void subscribeObservers() {
@@ -61,8 +68,27 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
 
     private void initRecyclerView(){
         recyclerAdapter = new RecipeRecyclerAdapter(this);
+        VerticalSpacingItemDecorator itemDecorator = new VerticalSpacingItemDecorator(30);
+        recyclerView.addItemDecoration(itemDecorator);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void initSearchView(){
+        final SearchView searchView = findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                recyclerAdapter.displayLoading();
+                recipeListViewModel.searchRecipeAPI(s,1);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
     }
 
     public void searchRecipeAPI(String query, int pageNumber){
@@ -80,7 +106,13 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
 
     @Override
     public void onCategoryClick(String category) {
+        recyclerAdapter.displayLoading();
+        recipeListViewModel.searchRecipeAPI(category,1);
+    }
 
+    private void displaySearchCategories(){
+        recipeListViewModel.setIsViewingRecipes(false);
+        recyclerAdapter.displaySearchCategories();
     }
         /*final RecipeApi recipeApi = ServiceGenerator.getRecipeApi();
 

@@ -5,6 +5,7 @@ def retrofitVersion = "2.5.0"
 def supportLibraryVersion = "28.0.0"
 def glideVersion = "4.8.0"
 def circularImageView = "3.0.0"
+def retrofitLoggingInterceptor = "4.2.1"
 
 android {
     compileSdkVersion 28
@@ -30,6 +31,7 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$retrofitLoggingInterceptor"
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
     // CardViews

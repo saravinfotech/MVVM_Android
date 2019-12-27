@@ -21,4 +21,6 @@ public class Constants {
                     "wine",
                     "italian"
             };
+
+    public static final String RECIPE_INTENT = "recipe";
 }

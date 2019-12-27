@@ -110,9 +110,9 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
 
     @Override
     public void onRecipeClick(int position) {
-      /*  Intent intent = new Intent(this,RecipeActivity.class);
+        Intent intent = new Intent(this,RecipeActivity.class);
         intent.putExtra(Constants.RECIPE_INTENT,recyclerAdapter.getSelectedRecipe(position));
-        startActivity(intent);*/
+        startActivity(intent);
     }
 
     @Override

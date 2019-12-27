@@ -24,6 +24,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private static final int CATEGORY_TYPE = 3;
 
     private static final String LOADING_TITLE = "LOADING...";
+    private static final String EXHAUSTED_TITLE = "EXHAUSTED...";
 
     private List<Recipe> recipes;
     private OnRecipeListener onRecipeListener;
@@ -86,6 +87,9 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             return CATEGORY_TYPE;
         } else if(recipes.get(position).title.equals(LOADING_TITLE)){
             return LOADING_TYPE;
+        } else if(position == recipes.size()-1 && position!=0 &&
+        !recipes.get(position).title.equals(EXHAUSTED_TITLE)){
+            return LOADING_TYPE;
         }else{
             return RECIPE_TYPE;
         }
@@ -138,5 +142,14 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void setRecipes(List<Recipe> recipes) {
         this.recipes = recipes;
         notifyDataSetChanged();
+    }
+
+    public Recipe getSelectedRecipe(int position){
+        if(recipes !=null){
+            if(recipes.size()>0){
+                return recipes.get(position);
+            }
+        }
+        return null;
     }
 }

@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,6 +60,15 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
                         recyclerAdapter.setRecipes(recipes);
                         recipeListViewModel.setIsPerformingQuery(false);
                     }
+                }
+            }
+        });
+
+        recipeListViewModel.isQueryExhausted().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                if(aBoolean){
+                    Log.d(TAG,"***********************Query exhausted");
                 }
             }
         });
